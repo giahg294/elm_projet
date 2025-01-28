@@ -33,6 +33,6 @@ instructionParser =
         [ keyword "Forward" |. spaces |= int |> map Forward
         , keyword "Left" |. spaces |= int |> map Left
         , keyword "Right" |. spaces |= int |> map Right
-        , keyword "Repeat" |. spaces |= int |= (between (symbol "[") (symbol "]") (instructionParser `sepBy` symbol ","))
+        , keyword "Repeat" |. spaces |= int |= (between (symbol "[") (symbol "]") (sepBy instructionParser (symbol ",")))
             |> map Repeat
         ]
