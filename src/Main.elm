@@ -14,16 +14,17 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
-import Parsing exposing (parseTcTurtle)  -- 引入解析模块
-import Drawing exposing (drawTcTurtle)  -- 引入绘图模块
+import Parsing exposing (parseTcTurtle) 
+import Drawing exposing (drawTcTurtle) 
 
 -- MODEL
 
 type alias Model =
-    { commands : String -- 用户输入的 TcTurtle 程序
-    , svgContent : Svg Msg -- 动态生成的 SVG 绘图
-    , errorMessage : Maybe String -- 错误提示信息
+    { commands : String -- Programme TcTurtle saisi par l'utilisateur  用户输入的 TcTurtle 程序
+    , svgContent : Svg Msg -- SVG généré dynamiquement  动态生成的 SVG 绘图
+    , errorMessage : Maybe String 
     }
+
 
 init : Model
 init =
@@ -50,14 +51,14 @@ update msg model =
                     { model | svgContent = drawTcTurtle program, errorMessage = Nothing }
 
                 Err err ->
-                    { model | errorMessage = Just ("解析错误: " ++ err) }
+                    { model | errorMessage = Just ("Erreur de Parsing: " ++ err) }
 
 -- VIEW
 
 view : Model -> Html Msg
 view model =
     div [ style "padding" "20px" ]
-        [ input [ placeholder "输入 TcTurtle 程序", value model.commands, onInput UpdateCommands, style "width" "100%" ] []
+        [ input [ placeholder "Veuillez entrer un programme TcTurtle", value model.commands, onInput UpdateCommands, style "width" "100%" ] []
         , button [ onClick Draw, style "margin-top" "10px" ] [ text "绘制" ]
         , case model.errorMessage of
             Nothing ->

@@ -1,4 +1,8 @@
 module Parsing exposing (parseTcTurtle)
+import Parser exposing (Parser, (|.), (|=), int, keyword, spaces, succeed, run, between, sepBy)
+import List exposing (map as listMap)
+
+
 
 
 {-|
@@ -6,9 +10,8 @@ Le module de parsing est chargé d'analyser le programme TcTurtle saisi par l'ut
 et de le convertir en une structure de données Elm structurée.
 -}
 
-import Parser exposing (Parser, (|.), (|=), int, keyword, spaces, succeed, run)
 
--- 数据结构
+-- Structure des donnees
 type Instruction
     = Forward Int
     | Left Int
@@ -18,7 +21,7 @@ type Instruction
 type Program =
     List Instruction
 
--- 解析器
+-- Parser
 parseTcTurtle : String -> Result String Program
 parseTcTurtle input =
     run programParser input
@@ -30,9 +33,9 @@ programParser =
 instructionParser : Parser Instruction
 instructionParser =
     oneOf
-        [ keyword "Forward" |. spaces |= int |> map Forward
-        , keyword "Left" |. spaces |= int |> map Left
-        , keyword "Right" |. spaces |= int |> map Right
+        [ keyword "Forward" |. spaces |= int |> listMap Forward
+        , keyword "Left" |. spaces |= int |> listMap Left
+        , keyword "Right" |. spaces |= int |> listMap Right
         , keyword "Repeat" |. spaces |= int |= (between (symbol "[") (symbol "]") (sepBy instructionParser (symbol ",")))
-            |> map Repeat
+            |> listMap Repeat
         ]

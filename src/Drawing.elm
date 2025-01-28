@@ -1,7 +1,7 @@
 module Drawing exposing (drawTcTurtle)
 
 {-|
-Le module de dessin est responsable de 
+Le module de dessin fait
 convertir le programme TcTurtle analysé en un graphique SVG.
 -}
 
@@ -16,8 +16,8 @@ type alias Point =
 drawTcTurtle : List Instruction -> Svg msg
 drawTcTurtle program =
     let
-        initialPosition = { x = 250, y = 250 } -- 初始点 (250, 250)
-        initialAngle = 0 -- 初始角度
+        initialPosition = { x = 250, y = 250 } -- position initiale (250, 250)
+        initialAngle = 0 -- angle initial
         commands = executeProgram program initialPosition initialAngle
     in
     svg [ width "500", height "500", viewBox "0 0 500 500", style "border: 1px solid black;" ]
@@ -26,6 +26,7 @@ drawTcTurtle program =
 executeProgram : List Instruction -> Point -> Float -> List (Point, Point)
 executeProgram instructions startPosition startAngle =
     -- 递归执行绘图指令的逻辑，返回一组点对
+    -- exécuter de manière récursive les instructions de dessin et retourner un ensemble de paires de points.
     []
 
 drawLine : (Point, Point) -> Svg msg
