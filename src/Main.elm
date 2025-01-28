@@ -1,16 +1,12 @@
+module Main exposing (main)
+
+
 {-|
 Le programme principal est responsable de :
 L'interface utilisateur pour la saisie des commandes ;
 L'affichage du dessin SVG généré ;
 L'intégration avec les modules de parsing et de dessin.
 -}
-
-
-module Main exposing (main)
-
-
--- 其余代码...
-
 
 import Browser
 import Html exposing (Html, div, input, button, text)
