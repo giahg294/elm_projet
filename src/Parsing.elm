@@ -1,10 +1,10 @@
+module Parsing exposing (parseTcTurtle)
+
+
 {-|
 Le module de parsing est chargé d'analyser le programme TcTurtle saisi par l'utilisateur 
 et de le convertir en une structure de données Elm structurée.
 -}
-
-
-module Parsing exposing (parseTcTurtle)
 
 import Parser exposing (Parser, (|.), (|=), int, keyword, spaces, succeed, run)
 
@@ -25,7 +25,7 @@ parseTcTurtle input =
 
 programParser : Parser Program
 programParser =
-    between (symbol "[") (symbol "]") (instructionParser `sepBy` symbol ",")
+    between (symbol "[") (symbol "]") (sepBy instructionParser (symbol ","))
 
 instructionParser : Parser Instruction
 instructionParser =

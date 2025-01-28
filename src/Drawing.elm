@@ -1,13 +1,14 @@
+module Drawing exposing (drawTcTurtle)
+
 {-|
 Le module de dessin est responsable de 
 convertir le programme TcTurtle analysé en un graphique SVG.
 -}
 
-
-module Drawing exposing (drawTcTurtle)
-
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
+import Parsing exposing (Instruction)
+
 
 type alias Point =
     { x : Float, y : Float }
