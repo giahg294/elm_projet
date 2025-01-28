@@ -1,9 +1,7 @@
 module Parsing exposing (parseTcTurtle)
-import Parser exposing (Parser, (|.), (|=), int, keyword, spaces, succeed, run, between, sepBy)
+import Parser exposing (Parser, (|.), (|=), int, keyword, spaces, succeed, run, sepBy)
+import Parser.Advanced exposing (between)
 import List exposing (map as listMap)
-
-
-
 
 {-|
 Le module de parsing est chargé d'analyser le programme TcTurtle saisi par l'utilisateur 

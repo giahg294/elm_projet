@@ -1,0 +1,22 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Projet ELM</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="page">
+    <h1>Projet TcTurtle</h1>
+    <p>Type in your code below:</p>
+    <div id="elm-app"></div>
+  </div>
+  <script src="elm.js"></script>
+  <script>
+    var app = Elm.TcTurtle.Main.init({
+      node: document.getElementById("elm-app")
+    });
+  </script>
+</body>
+</html>
