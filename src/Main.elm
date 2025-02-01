@@ -47,15 +47,15 @@ update : Msg -> Model -> Model
 update msg model =
     case msg of
         UpdateCommands newCommands ->
-            { model | commands = newCommands, errorMessage = Nothing }  -- Mise à jour des commandes et réinitialisation de l'erreur  -- 更新命令并重置错误信息
+            { model | commands = newCommands, errorMessage = Nothing }
 
         Draw ->
             case parseTcTurtle model.commands of
                 Ok program ->
-                    { model | svgContent = drawTcTurtle program, errorMessage = Nothing }  -- Dessin du programme et réinitialisation de l'erreur  -- 绘制程序并重置错误信息
+                    { model | svgContent = div [] [ Html.map (\_ -> Draw) (drawTcTurtle program) ], errorMessage = Nothing }
 
                 Err err ->
-                    { model | errorMessage = Just ("Erreur de Parsing: " ++ err) }  -- Si erreur de parsing, affichage du message d'erreur  -- 如果解析错误，显示错误信息
+                    { model | errorMessage = Just ("Erreur de Parsing: " ++ String.join "\n" err) }
 
 -- VIEW
 
