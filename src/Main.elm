@@ -5,7 +5,7 @@ import Browser
 import Html exposing (Html, button, div, input, text)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
-import TcTurtle.Parser exposing (read, Instruction)
+import TcTurtle.Parser exposing (read, Instruction(..))
 import TcTurtle.Drawing exposing (renderDrawing)
 
 type alias Model =
