@@ -7,11 +7,9 @@ import Html exposing (Html, button, div, input)
 import Html.Events exposing (onClick, onInput)
 import Html.Attributes exposing (..)
 import Svg exposing (..)
-import Svg.Attributes exposing (viewBox)
+import Svg.Attributes exposing (..)
 import Drawing exposing (..)
-import Time exposing (..)
-import Process
-import Task
+-- import Degbug
 
 -- MAIN
 main =
@@ -21,14 +19,13 @@ main =
 type alias Model =
     { commandes : List Instruction
     , commande_str : String
+    , commande_svg : List (Svg Msg)
     , erreur : Erreur
-    , taille_dessin : Float
-    , initial_x : Float
-    , initial_y : Float
-    , commandesExecutees : List Instruction
-    , drawing : Bool
-    , svgPartiel : List (Svg Msg)
-    , svgFini : List (Svg Msg)
+    , size : Float
+    , x_i : Float
+    , y_i : Float
+    , couleur : String
+-- , debugMsg : String  -- Ajout du champ debug
     }
 
 type Erreur
@@ -37,14 +34,24 @@ type Erreur
 
 init : () -> (Model, Cmd msg )
 init _ =
-    ( {commande_str = "", commandes = [], erreur = None, commandesExecutees = [], drawing = False, svgPartiel = [], svgFini = [], taille_dessin = 1, initial_x = 0, initial_y = 0}, Cmd.none )
+    ( {commande_str = ""
+    , commandes = []
+    , commande_svg = []
+    , erreur = None
+    , size = 1
+    , x_i = 0
+    , y_i = 0
+    , couleur = "black"
+    -- , debugMsg = ""
+    }, 
+    
+    Cmd.none)
 
 -- UPDATE
 
 type Msg
     = Change String
     | Draw
-    | Timer
 
 unwrap : Result (List Parser.DeadEnd) (List Instruction) -> List Instruction
 unwrap res =
@@ -62,39 +69,25 @@ update msg model =
             ({ model | commande_str = str }, Cmd.none)
 
         Draw ->
-            let chemin = unwrap (run liste_instructions model.commande_str) in
+            let 
+                chemin = unwrap (run liste_instructions model.commande_str)
+                resultatSvg = Drawing.res_svg chemin (Positions_turtle (model.x_i + 150.0) (model.y_i + 150.0) 0 model.couleur) []
+                -- debugText = "Resultat res_svg : " ++ Debug.toString resultatSvg
+            in
             if List.isEmpty chemin then
                 ({ model
                     | commandes = []
                     , erreur = Message "Commande invalide"
+                    -- , debugMsg = "Commande invalide"
                 }, Cmd.none)
             else
                 ({ model
                     | commandes = chemin
                     , erreur = None
-                    , drawing = True
-                    , svgFini = (Tuple.second (Drawing.res_svg chemin  (Tcturtle (model.initial_x + 150.0) (model.initial_y + 150.0) 0) []))
+                    , commande_svg = Tuple.second resultatSvg
+                    -- , debugMsg = debugText  --
                 }, Cmd.none)
-        
-        Timer ->
-            if model.drawing then
-                case model.svgFini of
-                    [] ->
-                        ( { model
-                            | drawing = False
-                            , commandesExecutees = []
-                          }
-                        , Cmd.none
-                        )
-                    nextCommand :: remaining ->
-                        ( { model
-                            |svgFini = remaining, 
-                            svgPartiel = model.svgPartiel ++ [nextCommand]
-                          }
-                        , Task.perform (\_ -> Timer) (Process.sleep 5)
-                        )
-            else
-                (model, Cmd.none)
+            
 
 -- SUBSCRIPTIONS
 
@@ -108,6 +101,8 @@ view model =
     div [ Html.Attributes.style "display" "flex", Html.Attributes.style "flex-direction" "column", Html.Attributes.style "align-items" "center", Html.Attributes.style "justify-content" "center"]
         [ Html.h1 [ Html.Attributes.style "color" "red" ] [ Html.text "TcTurtle Project" ]
         , Html.h2 [ Html.Attributes.style "color" "black" ] [ Html.text "Type in your code below:" ]
+        -- , div [ Html.Attributes.style "margin" "10px", Html.Attributes.style "color" "red" ]
+        --     [ Html.text model.debugMsg ]
         , div [ Html.Attributes.style "margin" "10px" ]
             [ input [ placeholder "ex: [Forward 10]", value model.commande_str, onInput Change] []
             ]
@@ -117,8 +112,7 @@ view model =
         , case model.erreur of
             None ->
                 div [ Html.Attributes.style "margin" "10px", Html.Attributes.style "border" "1px solid #ccc", Html.Attributes.style "padding" "10px" ]
-                    [ svg [ Svg.Attributes.width (String.fromInt 300), Svg.Attributes.height (String.fromInt 300), viewBox "0 0 300 300" ]
-                        model.svgPartiel
+                    [ svg [ Svg.Attributes.width "300", Svg.Attributes.height "300", viewBox "0 0 300 300" ] model.commande_svg
                     ]
             Message msg ->
                 div [ Html.Attributes.style "color" "black", Html.Attributes.style "text-align" "left", Html.Attributes.style "width" "300px" ]
