@@ -13,7 +13,12 @@ import Drawing exposing (..)
 
 -- MAIN
 main =
-    Browser.element {init = init, update = update, view = view, subscriptions = subscriptions }
+    Browser.element 
+    {init = init
+    , update = update
+    , view = view
+    , subscriptions = subscriptions 
+    }
 
 -- MODEL
 type alias Model =
@@ -32,6 +37,7 @@ type Erreur
     = None
     | Message String
 
+-- Initialisation des valeurs au lancement
 init : () -> (Model, Cmd msg )
 init _ =
     ( {commande_str = ""
@@ -44,21 +50,20 @@ init _ =
     , couleur = "black"
     -- , debugMsg = ""
     }, 
-    
     Cmd.none)
 
 -- UPDATE
-
 type Msg
     = Change String
-    | Draw 
+    | Dessin 
     | Choix_couleur String 
 
+-- extraire une liste d'instructions (List Instruction) d'un résultat (Result), retourne liste vide si erreur
 unwrap : Result (List Parser.DeadEnd) (List Instruction) -> List Instruction
 unwrap res =
     case res of
-        Ok cool ->
-            cool
+        Ok instruction ->
+            instruction
 
         Err _ ->
             []
@@ -69,13 +74,13 @@ update msg model =
         Change str ->
             ({ model | commande_str = str }, Cmd.none)
 
-        Draw ->
+        Dessin ->
             let 
-                chemin = unwrap (run liste_instructions model.commande_str)
-                resultatSvg = Drawing.res_svg chemin (Positions_turtle (model.x_i + 150.0) (model.y_i + 150.0) 0 model.couleur) []
-                -- debugText = "Resultat res_svg : " ++ Debug.toString resultatSvg
+                instructions = unwrap (run liste_instructions model.commande_str)
+                position_svg = Drawing.dessiner instructions (Positions_turtle (model.x_i + 150.0) (model.y_i + 150.0) 0 model.couleur) []
+                -- debugText = "Resultat resultat_svg : " ++ Debug.toString position_svg
             in
-            if List.isEmpty chemin then
+            if List.isEmpty instructions then
                 ({ model
                     | commandes = []
                     , erreur = Message "Commande invalide"
@@ -83,13 +88,13 @@ update msg model =
                 }, Cmd.none)
             else
                 ({ model
-                    | commandes = chemin
+                    | commandes = instructions
                     , erreur = None
-                    , commande_svg = Tuple.second resultatSvg
+                    , commande_svg = Tuple.second position_svg
                     -- , debugMsg = debugText  --
                 }, Cmd.none)
        
-        Choix_couleur color ->  -- Changer la couleur
+        Choix_couleur color ->
             ({ model | couleur = color }, Cmd.none)
             
 
@@ -116,7 +121,7 @@ view model =
         [ Html.h1 [ Html.Attributes.style "color" "red" ] [ Html.text "TcTurtle Project ❤️" ]
         , Html.h2 [ Html.Attributes.style "color" "black" ] [ Html.text "Type in your code below:" ]
         , div [ Html.Attributes.style "margin" "3px"]
-            [ input [ Html.Attributes.style "width" "300px", Html.Attributes.style "border" "2px solid #ccc", placeholder "example: [Repeat 8 [Left 45, Repeat 6 [Repeat 90 [Forward 1, Left 2], Left 90]]]", value model.commande_str, onInput Change] []
+            [ input [ Html.Attributes.style "width" "300px", Html.Attributes.style "border" "2px solid #ccc", placeholder "example: [Repeat 360 [ Right 1, Forward 1]]", value model.commande_str, onInput Change] []
             ]
         , div [ Html.Attributes.style "margin" "10px", Html.Attributes.style "background-color" "black"]
             [ button [ onClick (Choix_couleur "black"), Html.Attributes.style "width" "100px", Html.Attributes.style "padding" "5px", Html.Attributes.style "background-color" "black",  Html.Attributes.style "color" "white"] [ Html.text "Black"]
@@ -129,7 +134,7 @@ view model =
             , button [ onClick (Choix_couleur "yellow"), Html.Attributes.style "width" "100px", Html.Attributes.style "padding" "5px", Html.Attributes.style "background-color" "yellow" ] [ Html.text "Yellow" ]
             ]
         , div [ Html.Attributes.style "margin" "10px" ]
-            [ button [ onClick Draw, Html.Attributes.style "padding" "5px", Html.Attributes.style "width" "300px"] [ Html.text "Draw <3" ]
+            [ button [ onClick Dessin, Html.Attributes.style "padding" "5px", Html.Attributes.style "width" "300px"] [ Html.text "Draw <3" ]
             ]
         , case model.erreur of
             None -> 
@@ -137,5 +142,5 @@ view model =
                     [ svg [ Svg.Attributes.width "300", Svg.Attributes.height "300", viewBox "0 0 300 300" ] model.commande_svg ]
             Message msg ->
                 div [ Html.Attributes.style "color" "black", Html.Attributes.style "text-align" "left", Html.Attributes.style "width" "300px", Html.Attributes.style "background-color" "white"]
-                    [ Html.h2 [] [ Html.text "Instructions invalides" ] ]
+                    [ Html.text "Commandes invalides, vérifie que le format de ta commande ressemble bien à '[Repeat 360 [ Right 1, Forward 1]]'."]
         ]

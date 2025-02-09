@@ -5320,8 +5320,137 @@ var $author$project$Main$Message = function (a) {
 	return {$: 'Message', a: a};
 };
 var $author$project$Drawing$Positions_turtle = F4(
-	function (x, y, orient, couleur) {
-		return {couleur: couleur, orient: orient, x: x, y: y};
+	function (x, y, angle, couleur) {
+		return {angle: angle, couleur: couleur, x: x, y: y};
+	});
+var $elm$core$List$append = F2(
+	function (xs, ys) {
+		if (!ys.b) {
+			return xs;
+		} else {
+			return A3($elm$core$List$foldr, $elm$core$List$cons, ys, xs);
+		}
+	});
+var $elm$core$Basics$cos = _Basics_cos;
+var $elm$core$Basics$pi = _Basics_pi;
+var $elm$core$Basics$degrees = function (angleInDegrees) {
+	return (angleInDegrees * $elm$core$Basics$pi) / 180;
+};
+var $elm$core$String$fromFloat = _String_fromNumber;
+var $elm$svg$Svg$trustedNode = _VirtualDom_nodeNS('http://www.w3.org/2000/svg');
+var $elm$svg$Svg$line = $elm$svg$Svg$trustedNode('line');
+var $elm$core$Basics$sin = _Basics_sin;
+var $elm$svg$Svg$Attributes$stroke = _VirtualDom_attribute('stroke');
+var $elm$svg$Svg$Attributes$strokeWidth = _VirtualDom_attribute('stroke-width');
+var $elm$svg$Svg$Attributes$x1 = _VirtualDom_attribute('x1');
+var $elm$svg$Svg$Attributes$x2 = _VirtualDom_attribute('x2');
+var $elm$svg$Svg$Attributes$y1 = _VirtualDom_attribute('y1');
+var $elm$svg$Svg$Attributes$y2 = _VirtualDom_attribute('y2');
+var $author$project$Drawing$avancer = F4(
+	function (etapes, position_a, position_b, dessin_svg) {
+		return A3(
+			$author$project$Drawing$dessiner,
+			etapes,
+			position_b,
+			A2(
+				$elm$core$List$append,
+				dessin_svg,
+				_List_fromArray(
+					[
+						A2(
+						$elm$svg$Svg$line,
+						_List_fromArray(
+							[
+								$elm$svg$Svg$Attributes$x1(
+								$elm$core$String$fromFloat(position_a.x)),
+								$elm$svg$Svg$Attributes$y1(
+								$elm$core$String$fromFloat(position_a.y)),
+								$elm$svg$Svg$Attributes$x2(
+								$elm$core$String$fromFloat(position_b.x)),
+								$elm$svg$Svg$Attributes$y2(
+								$elm$core$String$fromFloat(position_b.y)),
+								$elm$svg$Svg$Attributes$stroke(position_a.couleur),
+								$elm$svg$Svg$Attributes$strokeWidth('2')
+							]),
+						_List_Nil)
+					])));
+	});
+var $author$project$Drawing$dessiner = F3(
+	function (etapes, positions_turtle, dessin_svg) {
+		dessiner:
+		while (true) {
+			if (!etapes.b) {
+				return _Utils_Tuple2(positions_turtle, dessin_svg);
+			} else {
+				var instruction = etapes.a;
+				var liste_instructions = etapes.b;
+				switch (instruction.$) {
+					case 'Forward':
+						var distance = instruction.a;
+						return A4(
+							$author$project$Drawing$avancer,
+							liste_instructions,
+							positions_turtle,
+							A4(
+								$author$project$Drawing$Positions_turtle,
+								positions_turtle.x + ($elm$core$Basics$cos(
+									$elm$core$Basics$degrees(positions_turtle.angle)) * distance),
+								positions_turtle.y + ($elm$core$Basics$sin(
+									$elm$core$Basics$degrees(positions_turtle.angle)) * distance),
+								positions_turtle.angle,
+								positions_turtle.couleur),
+							dessin_svg);
+					case 'Right':
+						var angle = instruction.a;
+						var $temp$etapes = liste_instructions,
+							$temp$positions_turtle = A4($author$project$Drawing$Positions_turtle, positions_turtle.x, positions_turtle.y, positions_turtle.angle + angle, positions_turtle.couleur),
+							$temp$dessin_svg = dessin_svg;
+						etapes = $temp$etapes;
+						positions_turtle = $temp$positions_turtle;
+						dessin_svg = $temp$dessin_svg;
+						continue dessiner;
+					case 'Left':
+						var angle = instruction.a;
+						var $temp$etapes = liste_instructions,
+							$temp$positions_turtle = A4($author$project$Drawing$Positions_turtle, positions_turtle.x, positions_turtle.y, positions_turtle.angle - angle, positions_turtle.couleur),
+							$temp$dessin_svg = dessin_svg;
+						etapes = $temp$etapes;
+						positions_turtle = $temp$positions_turtle;
+						dessin_svg = $temp$dessin_svg;
+						continue dessiner;
+					default:
+						var nb = instruction.a;
+						var instructions = instruction.b;
+						return A3(
+							$author$project$Drawing$repeat,
+							nb,
+							instructions,
+							_Utils_Tuple2(positions_turtle, dessin_svg));
+				}
+			}
+		}
+	});
+var $author$project$Drawing$repeat = F3(
+	function (n, liste_instructions, _v0) {
+		repeat:
+		while (true) {
+			var positions_turtle = _v0.a;
+			var dessin_svg = _v0.b;
+			if (n <= 0) {
+				return _Utils_Tuple2(positions_turtle, dessin_svg);
+			} else {
+				var _v1 = A3($author$project$Drawing$dessiner, liste_instructions, positions_turtle, dessin_svg);
+				var new_positions = _v1.a;
+				var new_svg = _v1.b;
+				var $temp$n = n - 1,
+					$temp$liste_instructions = liste_instructions,
+					$temp$_v0 = _Utils_Tuple2(new_positions, new_svg);
+				n = $temp$n;
+				liste_instructions = $temp$liste_instructions;
+				_v0 = $temp$_v0;
+				continue repeat;
+			}
+		}
 	});
 var $elm$core$List$isEmpty = function (xs) {
 	if (!xs.b) {
@@ -6136,140 +6265,6 @@ try {
 	throw 'Some top-level definitions from `Parsing` are causing infinite recursion:\n\n  ┌─────┐\n  │    extraire_instructions\n  │     ↓\n  │    parseRepeat\n  └─────┘\n\nThese errors are very tricky, so read https://elm-lang.org/0.19.1/bad-recursion to learn how to fix it!';}
 var $author$project$Parsing$liste_instructions = $elm$parser$Parser$sequence(
 	{end: ']', item: $author$project$Parsing$extraire_instructions, separator: ',', spaces: $elm$parser$Parser$spaces, start: '[', trailing: $elm$parser$Parser$Optional});
-var $elm$core$List$append = F2(
-	function (xs, ys) {
-		if (!ys.b) {
-			return xs;
-		} else {
-			return A3($elm$core$List$foldr, $elm$core$List$cons, ys, xs);
-		}
-	});
-var $elm$core$Basics$cos = _Basics_cos;
-var $elm$core$Basics$pi = _Basics_pi;
-var $elm$core$Basics$degrees = function (angleInDegrees) {
-	return (angleInDegrees * $elm$core$Basics$pi) / 180;
-};
-var $elm$core$String$fromFloat = _String_fromNumber;
-var $elm$svg$Svg$trustedNode = _VirtualDom_nodeNS('http://www.w3.org/2000/svg');
-var $elm$svg$Svg$line = $elm$svg$Svg$trustedNode('line');
-var $elm$core$Basics$sin = _Basics_sin;
-var $elm$svg$Svg$Attributes$stroke = _VirtualDom_attribute('stroke');
-var $elm$svg$Svg$Attributes$strokeWidth = _VirtualDom_attribute('stroke-width');
-var $elm$svg$Svg$Attributes$x1 = _VirtualDom_attribute('x1');
-var $elm$svg$Svg$Attributes$x2 = _VirtualDom_attribute('x2');
-var $elm$svg$Svg$Attributes$y1 = _VirtualDom_attribute('y1');
-var $elm$svg$Svg$Attributes$y2 = _VirtualDom_attribute('y2');
-var $author$project$Drawing$avancer = F4(
-	function (etapes, positions_turtle, next_positions_turtle, svg_final) {
-		return A3(
-			$author$project$Drawing$res_svg,
-			etapes,
-			next_positions_turtle,
-			A2(
-				$elm$core$List$append,
-				svg_final,
-				_List_fromArray(
-					[
-						A2(
-						$elm$svg$Svg$line,
-						_List_fromArray(
-							[
-								$elm$svg$Svg$Attributes$x1(
-								$elm$core$String$fromFloat(positions_turtle.x)),
-								$elm$svg$Svg$Attributes$y1(
-								$elm$core$String$fromFloat(positions_turtle.y)),
-								$elm$svg$Svg$Attributes$x2(
-								$elm$core$String$fromFloat(next_positions_turtle.x)),
-								$elm$svg$Svg$Attributes$y2(
-								$elm$core$String$fromFloat(next_positions_turtle.y)),
-								$elm$svg$Svg$Attributes$stroke(positions_turtle.couleur),
-								$elm$svg$Svg$Attributes$strokeWidth('2')
-							]),
-						_List_Nil)
-					])));
-	});
-var $author$project$Drawing$repeat = F2(
-	function (rest_of_etapes, _v3) {
-		var positions_turtle = _v3.a;
-		var final_svg = _v3.b;
-		return A3($author$project$Drawing$res_svg, rest_of_etapes, positions_turtle, final_svg);
-	});
-var $author$project$Drawing$repeatetapes = F4(
-	function (n, etapes, positions_turtle, svg_final) {
-		repeatetapes:
-		while (true) {
-			if (n <= 0) {
-				return _Utils_Tuple2(positions_turtle, svg_final);
-			} else {
-				var _v2 = A3($author$project$Drawing$res_svg, etapes, positions_turtle, svg_final);
-				var new_positions_turtle = _v2.a;
-				var newSvg = _v2.b;
-				var $temp$n = n - 1,
-					$temp$etapes = etapes,
-					$temp$positions_turtle = new_positions_turtle,
-					$temp$svg_final = newSvg;
-				n = $temp$n;
-				etapes = $temp$etapes;
-				positions_turtle = $temp$positions_turtle;
-				svg_final = $temp$svg_final;
-				continue repeatetapes;
-			}
-		}
-	});
-var $author$project$Drawing$res_svg = F3(
-	function (etapes, positions_turtle, final_svg) {
-		res_svg:
-		while (true) {
-			if (!etapes.b) {
-				return _Utils_Tuple2(positions_turtle, final_svg);
-			} else {
-				var step = etapes.a;
-				var rest_of_etapes = etapes.b;
-				switch (step.$) {
-					case 'Forward':
-						var _long = step.a;
-						return A4(
-							$author$project$Drawing$avancer,
-							rest_of_etapes,
-							positions_turtle,
-							A4(
-								$author$project$Drawing$Positions_turtle,
-								positions_turtle.x + ($elm$core$Basics$cos(
-									$elm$core$Basics$degrees(positions_turtle.orient)) * _long),
-								positions_turtle.y + ($elm$core$Basics$sin(
-									$elm$core$Basics$degrees(positions_turtle.orient)) * _long),
-								positions_turtle.orient,
-								positions_turtle.couleur),
-							final_svg);
-					case 'Right':
-						var changement = step.a;
-						var $temp$etapes = rest_of_etapes,
-							$temp$positions_turtle = A4($author$project$Drawing$Positions_turtle, positions_turtle.x, positions_turtle.y, positions_turtle.orient + changement, positions_turtle.couleur),
-							$temp$final_svg = final_svg;
-						etapes = $temp$etapes;
-						positions_turtle = $temp$positions_turtle;
-						final_svg = $temp$final_svg;
-						continue res_svg;
-					case 'Left':
-						var changement = step.a;
-						var $temp$etapes = rest_of_etapes,
-							$temp$positions_turtle = A4($author$project$Drawing$Positions_turtle, positions_turtle.x, positions_turtle.y, positions_turtle.orient - changement, positions_turtle.couleur),
-							$temp$final_svg = final_svg;
-						etapes = $temp$etapes;
-						positions_turtle = $temp$positions_turtle;
-						final_svg = $temp$final_svg;
-						continue res_svg;
-					default:
-						var nb = step.a;
-						var repeat_etapes = step.b;
-						return A2(
-							$author$project$Drawing$repeat,
-							rest_of_etapes,
-							A4($author$project$Drawing$repeatetapes, nb, repeat_etapes, positions_turtle, final_svg));
-				}
-			}
-		}
-	});
 var $elm$parser$Parser$DeadEnd = F3(
 	function (row, col, problem) {
 		return {col: col, problem: problem, row: row};
@@ -6335,8 +6330,8 @@ var $elm$core$Tuple$second = function (_v0) {
 };
 var $author$project$Main$unwrap = function (res) {
 	if (res.$ === 'Ok') {
-		var cool = res.a;
-		return cool;
+		var instruction = res.a;
+		return instruction;
 	} else {
 		return _List_Nil;
 	}
@@ -6351,15 +6346,15 @@ var $author$project$Main$update = F2(
 						model,
 						{commande_str: str}),
 					$elm$core$Platform$Cmd$none);
-			case 'Draw':
-				var chemin = $author$project$Main$unwrap(
+			case 'Dessin':
+				var instructions = $author$project$Main$unwrap(
 					A2($elm$parser$Parser$run, $author$project$Parsing$liste_instructions, model.commande_str));
-				var resultatSvg = A3(
-					$author$project$Drawing$res_svg,
-					chemin,
+				var position_svg = A3(
+					$author$project$Drawing$dessiner,
+					instructions,
 					A4($author$project$Drawing$Positions_turtle, model.x_i + 150.0, model.y_i + 150.0, 0, model.couleur),
 					_List_Nil);
-				return $elm$core$List$isEmpty(chemin) ? _Utils_Tuple2(
+				return $elm$core$List$isEmpty(instructions) ? _Utils_Tuple2(
 					_Utils_update(
 						model,
 						{
@@ -6369,7 +6364,7 @@ var $author$project$Main$update = F2(
 					$elm$core$Platform$Cmd$none) : _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{commande_svg: resultatSvg.b, commandes: chemin, erreur: $author$project$Main$None}),
+						{commande_svg: position_svg.b, commandes: instructions, erreur: $author$project$Main$None}),
 					$elm$core$Platform$Cmd$none);
 			default:
 				var color = msg.a;
@@ -6386,7 +6381,7 @@ var $author$project$Main$Change = function (a) {
 var $author$project$Main$Choix_couleur = function (a) {
 	return {$: 'Choix_couleur', a: a};
 };
-var $author$project$Main$Draw = {$: 'Draw'};
+var $author$project$Main$Dessin = {$: 'Dessin'};
 var $elm$html$Html$button = _VirtualDom_node('button');
 var $elm$html$Html$div = _VirtualDom_node('div');
 var $elm$html$Html$h1 = _VirtualDom_node('h1');
@@ -6511,7 +6506,7 @@ var $author$project$Main$view = function (model) {
 							[
 								A2($elm$html$Html$Attributes$style, 'width', '300px'),
 								A2($elm$html$Html$Attributes$style, 'border', '2px solid #ccc'),
-								$elm$html$Html$Attributes$placeholder('example: [Repeat 8 [Left 45, Repeat 6 [Repeat 90 [Forward 1, Left 2], Left 90]]]'),
+								$elm$html$Html$Attributes$placeholder('example: [Repeat 360 [ Right 1, Forward 1]]'),
 								$elm$html$Html$Attributes$value(model.commande_str),
 								$elm$html$Html$Events$onInput($author$project$Main$Change)
 							]),
@@ -6652,7 +6647,7 @@ var $author$project$Main$view = function (model) {
 						$elm$html$Html$button,
 						_List_fromArray(
 							[
-								$elm$html$Html$Events$onClick($author$project$Main$Draw),
+								$elm$html$Html$Events$onClick($author$project$Main$Dessin),
 								A2($elm$html$Html$Attributes$style, 'padding', '5px'),
 								A2($elm$html$Html$Attributes$style, 'width', '300px')
 							]),
@@ -6698,13 +6693,7 @@ var $author$project$Main$view = function (model) {
 							]),
 						_List_fromArray(
 							[
-								A2(
-								$elm$html$Html$h2,
-								_List_Nil,
-								_List_fromArray(
-									[
-										$elm$html$Html$text('Instructions invalides')
-									]))
+								$elm$html$Html$text('Commandes invalides, vérifie que le format de ta commande ressemble bien à \'[Repeat 360 [ Right 1, Forward 1]]\'.')
 							]));
 				}
 			}()

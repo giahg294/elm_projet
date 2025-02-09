@@ -5,61 +5,66 @@ import Svg exposing (..)
 import Svg.Attributes exposing (..)
 import Basics exposing (degrees, cos, sin)
 
-type alias Positions_turtle = { x : Float, y : Float, orient : Float, couleur : String }
+type alias Positions_turtle = 
+    { x : Float
+    , y : Float
+    , angle : Float
+    , couleur : String 
+    }
 
--- rajoute une ligne SVG entre les 2 positions_turtle données à la liste de SVG donnée, et continue l'exécution des étapes de dessin
+-- Crée le vecteur svg à partir de deux points de coordonnes a et b
 avancer : List Instruction -> Positions_turtle -> Positions_turtle -> (List (Svg msg)) -> (Positions_turtle, (List (Svg msg)))
-avancer etapes positions_turtle next_positions_turtle svg_final =
-    res_svg etapes next_positions_turtle ( List.append svg_final
-        [ line [ x1 (String.fromFloat positions_turtle.x)
-                , y1 (String.fromFloat positions_turtle.y)
-                , x2 (String.fromFloat next_positions_turtle.x)
-                , y2 (String.fromFloat next_positions_turtle.y)
-                , stroke positions_turtle.couleur   -- Correction ici pour rendre la ligne visible
+avancer etapes position_a position_b dessin_svg =
+    dessiner etapes position_b ( List.append dessin_svg
+        [ line [ x1 (String.fromFloat position_a.x)
+                , y1 (String.fromFloat position_a.y)
+                , x2 (String.fromFloat position_b.x)
+                , y2 (String.fromFloat position_b.y)
+                , stroke position_a.couleur
                 , strokeWidth "2"  -- Épaisseur du trait
                 ] []
         ]
 
     )
 
-repeatetapes : Int -> List Instruction -> Positions_turtle -> List (Svg msg) -> (Positions_turtle, List (Svg msg))
-repeatetapes n etapes positions_turtle svg_final =
+-- pour répéter l'instruction n fois
+repeat : Int -> List Instruction -> (Positions_turtle, List (Svg msg)) -> (Positions_turtle, List (Svg msg))
+repeat n liste_instructions (positions_turtle, dessin_svg) =
     if n <= 0 then
-        (positions_turtle, svg_final)
+        (positions_turtle, dessin_svg)
     else
         let
-            (new_positions_turtle, newSvg) = res_svg etapes positions_turtle svg_final
+            (new_positions, new_svg) = dessiner liste_instructions positions_turtle dessin_svg
         in
-        repeatetapes (n - 1) etapes new_positions_turtle newSvg
+        repeat (n - 1) liste_instructions (new_positions, new_svg)
 
--- comme res_svg, mais prend un tuple comme 2ème argument comme ça on peut lui donner en entrée la sortie de repeatetapes directement
-repeat : List Instruction -> (Positions_turtle, (List (Svg msg))) -> (Positions_turtle, (List (Svg msg)))
-repeat rest_of_etapes (positions_turtle, final_svg) =
-    res_svg rest_of_etapes positions_turtle final_svg
 
--- à partir d'une liste d'étape à effectuer, d'une positions_turtle initiale et d'une liste de SVG donnée, renvoie la positions_turtle et la liste de SVG finale après l'exécution des étapes demandées
-res_svg : List Instruction -> Positions_turtle -> (List (Svg msg)) -> (Positions_turtle, (List (Svg msg)))
-res_svg etapes positions_turtle final_svg =
+-- donne positions et liste svg correspondant au dessin attendu avec la liste d'instrctions
+dessiner : List Instruction -> Positions_turtle -> (List (Svg msg)) -> (Positions_turtle, (List (Svg msg)))
+dessiner etapes positions_turtle dessin_svg =
     case etapes of
-        [] ->
-            (positions_turtle, final_svg)
+        -- y'a plus d'étapes à effectuer donc on renvoie le résultat
+        [] -> 
+            (positions_turtle, dessin_svg)
 
-        (step :: rest_of_etapes) ->
-            case step of
-                Forward long ->
-                    avancer rest_of_etapes positions_turtle
-                        (Positions_turtle (positions_turtle.x + cos (degrees positions_turtle.orient) * long)
-                                  (positions_turtle.y + sin (degrees positions_turtle.orient) * long)
-                                  positions_turtle.orient
+        -- y'a encore des instructions à dessiner
+        (instruction :: liste_instructions) -> 
+            case instruction of
+                -- on avance
+                Forward distance ->
+                    avancer liste_instructions positions_turtle
+                        (Positions_turtle (positions_turtle.x + cos (degrees positions_turtle.angle) * distance)
+                                  (positions_turtle.y + sin (degrees positions_turtle.angle) * distance)
+                                  positions_turtle.angle
                                   positions_turtle.couleur
                         )
-                        final_svg
-
-                Right changement ->
-                    res_svg rest_of_etapes (Positions_turtle positions_turtle.x positions_turtle.y (positions_turtle.orient + changement) positions_turtle.couleur) final_svg
-
-                Left changement ->
-                    res_svg rest_of_etapes (Positions_turtle positions_turtle.x positions_turtle.y (positions_turtle.orient - changement) positions_turtle.couleur) final_svg
-
-                Repeat nb repeat_etapes ->
-                    repeat rest_of_etapes (repeatetapes nb repeat_etapes positions_turtle final_svg)
+                        dessin_svg
+                -- on veut tourner à droite
+                Right angle ->
+                    dessiner liste_instructions (Positions_turtle positions_turtle.x positions_turtle.y (positions_turtle.angle + angle) positions_turtle.couleur) dessin_svg
+                -- on veut tourner à gauche
+                Left angle ->
+                    dessiner liste_instructions (Positions_turtle positions_turtle.x positions_turtle.y (positions_turtle.angle - angle) positions_turtle.couleur) dessin_svg
+                -- on veut répéter n fois
+                Repeat nb instructions ->
+                    repeat nb instructions (positions_turtle, dessin_svg)

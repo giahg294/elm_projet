@@ -9,7 +9,7 @@ type Instruction
     | Left Float
     | Repeat Int (List Instruction)
 
--- Pour parser une liste complète de commandes
+-- Récuperer la commande à faire
 extraire_instructions : Parser Instruction
 extraire_instructions = oneOf [
     parseForward
@@ -17,6 +17,7 @@ extraire_instructions = oneOf [
     , parseRight
     , parseRepeat
     ]
+-- séparer les instructions
 liste_instructions : Parser (List Instruction)
 liste_instructions = 
     Parser.sequence 
@@ -28,7 +29,7 @@ liste_instructions =
         , trailing = Optional
         }
 
--- Parses "Forward x"
+-- Forward
 parseForward : Parser Instruction
 parseForward =
     succeed (\n -> Forward (Basics.toFloat n))
@@ -38,7 +39,7 @@ parseForward =
 
 
 
--- Parses "Left x"
+-- Left
 parseLeft : Parser Instruction
 parseLeft =
     succeed (\n -> Left (Basics.toFloat n))
@@ -48,17 +49,17 @@ parseLeft =
 
 
 
--- Parses "Right x"
+-- Right
 parseRight : Parser Instruction
 parseRight =
-    succeed (\n -> Right (Basics.toFloat n))  -- Explicitly use Basics.toFloat
+    succeed (\n -> Right (Basics.toFloat n))
         |. symbol "Right"
         |. spaces
         |= int
 
 
--- Parses "Repeat x [ instructions ]"repeatParser : Parser Command
-parseRepeat =
+-- Repeat
+parseRepeat = 
     succeed Repeat
         |. symbol "Repeat"
         |. spaces
