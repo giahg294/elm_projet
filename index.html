@@ -6485,7 +6485,7 @@ var $author$project$Main$view = function (model) {
 					]),
 				_List_fromArray(
 					[
-						$elm$html$Html$text('TcTurtle Project')
+						$elm$html$Html$text('TcTurtle Project ❤️')
 					])),
 				A2(
 				$elm$html$Html$h2,
@@ -6501,7 +6501,7 @@ var $author$project$Main$view = function (model) {
 				$elm$html$Html$div,
 				_List_fromArray(
 					[
-						A2($elm$html$Html$Attributes$style, 'margin', '10px')
+						A2($elm$html$Html$Attributes$style, 'margin', '3px')
 					]),
 				_List_fromArray(
 					[
@@ -6509,11 +6509,136 @@ var $author$project$Main$view = function (model) {
 						$elm$html$Html$input,
 						_List_fromArray(
 							[
-								$elm$html$Html$Attributes$placeholder('ex: [Forward 10]'),
+								A2($elm$html$Html$Attributes$style, 'width', '300px'),
+								A2($elm$html$Html$Attributes$style, 'border', '2px solid #ccc'),
+								$elm$html$Html$Attributes$placeholder('example: [Repeat 8 [Left 45, Repeat 6 [Repeat 90 [Forward 1, Left 2], Left 90]]]'),
 								$elm$html$Html$Attributes$value(model.commande_str),
 								$elm$html$Html$Events$onInput($author$project$Main$Change)
 							]),
 						_List_Nil)
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'margin', '10px'),
+						A2($elm$html$Html$Attributes$style, 'background-color', 'black')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$button,
+						_List_fromArray(
+							[
+								$elm$html$Html$Events$onClick(
+								$author$project$Main$Choix_couleur('black')),
+								A2($elm$html$Html$Attributes$style, 'width', '100px'),
+								A2($elm$html$Html$Attributes$style, 'padding', '5px'),
+								A2($elm$html$Html$Attributes$style, 'background-color', 'black'),
+								A2($elm$html$Html$Attributes$style, 'color', 'white')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Black')
+							])),
+						A2(
+						$elm$html$Html$button,
+						_List_fromArray(
+							[
+								$elm$html$Html$Events$onClick(
+								$author$project$Main$Choix_couleur('red')),
+								A2($elm$html$Html$Attributes$style, 'width', '100px'),
+								A2($elm$html$Html$Attributes$style, 'padding', '5px'),
+								A2($elm$html$Html$Attributes$style, 'background-color', 'red')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Red')
+							])),
+						A2(
+						$elm$html$Html$button,
+						_List_fromArray(
+							[
+								$elm$html$Html$Events$onClick(
+								$author$project$Main$Choix_couleur('green')),
+								A2($elm$html$Html$Attributes$style, 'width', '100px'),
+								A2($elm$html$Html$Attributes$style, 'padding', '5px'),
+								A2($elm$html$Html$Attributes$style, 'background-color', 'green')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Green')
+							])),
+						A2(
+						$elm$html$Html$button,
+						_List_fromArray(
+							[
+								$elm$html$Html$Events$onClick(
+								$author$project$Main$Choix_couleur('blue')),
+								A2($elm$html$Html$Attributes$style, 'width', '100px'),
+								A2($elm$html$Html$Attributes$style, 'padding', '5px'),
+								A2($elm$html$Html$Attributes$style, 'background-color', 'blue')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Blue')
+							])),
+						A2(
+						$elm$html$Html$button,
+						_List_fromArray(
+							[
+								$elm$html$Html$Events$onClick(
+								$author$project$Main$Choix_couleur('pink')),
+								A2($elm$html$Html$Attributes$style, 'width', '100px'),
+								A2($elm$html$Html$Attributes$style, 'padding', '5px'),
+								A2($elm$html$Html$Attributes$style, 'background-color', '#FFB6C1')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Baby Pink')
+							])),
+						A2(
+						$elm$html$Html$button,
+						_List_fromArray(
+							[
+								$elm$html$Html$Events$onClick(
+								$author$project$Main$Choix_couleur('fuchsia')),
+								A2($elm$html$Html$Attributes$style, 'width', '100px'),
+								A2($elm$html$Html$Attributes$style, 'padding', '5px'),
+								A2($elm$html$Html$Attributes$style, 'background-color', '#FF00FF')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Barbie Pink')
+							])),
+						A2(
+						$elm$html$Html$button,
+						_List_fromArray(
+							[
+								$elm$html$Html$Events$onClick(
+								$author$project$Main$Choix_couleur('purple')),
+								A2($elm$html$Html$Attributes$style, 'width', '100px'),
+								A2($elm$html$Html$Attributes$style, 'padding', '5px'),
+								A2($elm$html$Html$Attributes$style, 'background-color', '#9B4D96')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Purple')
+							])),
+						A2(
+						$elm$html$Html$button,
+						_List_fromArray(
+							[
+								$elm$html$Html$Events$onClick(
+								$author$project$Main$Choix_couleur('yellow')),
+								A2($elm$html$Html$Attributes$style, 'width', '100px'),
+								A2($elm$html$Html$Attributes$style, 'padding', '5px'),
+								A2($elm$html$Html$Attributes$style, 'background-color', 'yellow')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Yellow')
+							]))
 					])),
 				A2(
 				$elm$html$Html$div,
@@ -6528,125 +6653,12 @@ var $author$project$Main$view = function (model) {
 						_List_fromArray(
 							[
 								$elm$html$Html$Events$onClick($author$project$Main$Draw),
-								A2($elm$html$Html$Attributes$style, 'padding', '5px')
+								A2($elm$html$Html$Attributes$style, 'padding', '5px'),
+								A2($elm$html$Html$Attributes$style, 'width', '300px')
 							]),
 						_List_fromArray(
 							[
 								$elm$html$Html$text('Draw <3')
-							]))
-					])),
-				A2(
-				$elm$html$Html$div,
-				_List_fromArray(
-					[
-						A2($elm$html$Html$Attributes$style, 'margin', '10px')
-					]),
-				_List_fromArray(
-					[
-						A2(
-						$elm$html$Html$button,
-						_List_fromArray(
-							[
-								$elm$html$Html$Events$onClick(
-								$author$project$Main$Choix_couleur('black')),
-								A2($elm$html$Html$Attributes$style, 'padding', '5px'),
-								A2($elm$html$Html$Attributes$style, 'background-color', 'black'),
-								A2($elm$html$Html$Attributes$style, 'color', 'white')
-							]),
-						_List_fromArray(
-							[
-								$elm$html$Html$text('Noir')
-							])),
-						A2(
-						$elm$html$Html$button,
-						_List_fromArray(
-							[
-								$elm$html$Html$Events$onClick(
-								$author$project$Main$Choix_couleur('red')),
-								A2($elm$html$Html$Attributes$style, 'padding', '5px'),
-								A2($elm$html$Html$Attributes$style, 'background-color', 'red')
-							]),
-						_List_fromArray(
-							[
-								$elm$html$Html$text('Rouge')
-							])),
-						A2(
-						$elm$html$Html$button,
-						_List_fromArray(
-							[
-								$elm$html$Html$Events$onClick(
-								$author$project$Main$Choix_couleur('green')),
-								A2($elm$html$Html$Attributes$style, 'padding', '5px'),
-								A2($elm$html$Html$Attributes$style, 'background-color', 'green')
-							]),
-						_List_fromArray(
-							[
-								$elm$html$Html$text('Vert')
-							])),
-						A2(
-						$elm$html$Html$button,
-						_List_fromArray(
-							[
-								$elm$html$Html$Events$onClick(
-								$author$project$Main$Choix_couleur('blue')),
-								A2($elm$html$Html$Attributes$style, 'padding', '5px'),
-								A2($elm$html$Html$Attributes$style, 'background-color', 'blue')
-							]),
-						_List_fromArray(
-							[
-								$elm$html$Html$text('Bleu')
-							])),
-						A2(
-						$elm$html$Html$button,
-						_List_fromArray(
-							[
-								$elm$html$Html$Events$onClick(
-								$author$project$Main$Choix_couleur('pink')),
-								A2($elm$html$Html$Attributes$style, 'padding', '5px'),
-								A2($elm$html$Html$Attributes$style, 'background-color', '#FFB6C1')
-							]),
-						_List_fromArray(
-							[
-								$elm$html$Html$text('Rose Pâle')
-							])),
-						A2(
-						$elm$html$Html$button,
-						_List_fromArray(
-							[
-								$elm$html$Html$Events$onClick(
-								$author$project$Main$Choix_couleur('fuchsia')),
-								A2($elm$html$Html$Attributes$style, 'padding', '5px'),
-								A2($elm$html$Html$Attributes$style, 'background-color', '#FF00FF')
-							]),
-						_List_fromArray(
-							[
-								$elm$html$Html$text('Rose Barbie')
-							])),
-						A2(
-						$elm$html$Html$button,
-						_List_fromArray(
-							[
-								$elm$html$Html$Events$onClick(
-								$author$project$Main$Choix_couleur('purple')),
-								A2($elm$html$Html$Attributes$style, 'padding', '5px'),
-								A2($elm$html$Html$Attributes$style, 'background-color', '#9B4D96')
-							]),
-						_List_fromArray(
-							[
-								$elm$html$Html$text('Violet')
-							])),
-						A2(
-						$elm$html$Html$button,
-						_List_fromArray(
-							[
-								$elm$html$Html$Events$onClick(
-								$author$project$Main$Choix_couleur('yellow')),
-								A2($elm$html$Html$Attributes$style, 'padding', '5px'),
-								A2($elm$html$Html$Attributes$style, 'background-color', 'yellow')
-							]),
-						_List_fromArray(
-							[
-								$elm$html$Html$text('Jaune')
 							]))
 					])),
 				function () {
@@ -6658,7 +6670,8 @@ var $author$project$Main$view = function (model) {
 							[
 								A2($elm$html$Html$Attributes$style, 'margin', '10px'),
 								A2($elm$html$Html$Attributes$style, 'border', '1px solid #ccc'),
-								A2($elm$html$Html$Attributes$style, 'padding', '10px')
+								A2($elm$html$Html$Attributes$style, 'padding', '10px'),
+								A2($elm$html$Html$Attributes$style, 'background-color', 'white')
 							]),
 						_List_fromArray(
 							[
@@ -6680,7 +6693,8 @@ var $author$project$Main$view = function (model) {
 							[
 								A2($elm$html$Html$Attributes$style, 'color', 'black'),
 								A2($elm$html$Html$Attributes$style, 'text-align', 'left'),
-								A2($elm$html$Html$Attributes$style, 'width', '300px')
+								A2($elm$html$Html$Attributes$style, 'width', '300px'),
+								A2($elm$html$Html$Attributes$style, 'background-color', 'white')
 							]),
 						_List_fromArray(
 							[
