@@ -1,47 +1,70 @@
-module Parsing exposing (parseTcTurtle)
-import Parser exposing (Parser, (|.), (|=), int, keyword, spaces, succeed, run, sepBy, symbol)
+module Parsing exposing (..)
 
-import List exposing (map)
+import Parser exposing (..)
+import String exposing (..)
 
-{-|
-Le module de parsing est chargé d'analyser le programme TcTurtle saisi par l'utilisateur 
-et de le convertir en une structure de données Elm structurée.
--}
-
--- Structure des donnees
 type Instruction
-    = Forward Int
-    | Left Int
-    | Right Int
+    = Forward Float
+    | Right Float
+    | Left Float
     | Repeat Int (List Instruction)
 
-type Program =
-    List Instruction
+-- Pour parser une liste complète de commandes
+extraire_instructions : Parser Instruction
+extraire_instructions = oneOf [
+    parseForward
+    , parseLeft
+    , parseRight
+    , parseRepeat
+    ]
+liste_instructions : Parser (List Instruction)
+liste_instructions = 
+    Parser.sequence 
+        { start = "["
+        , separator = ","
+        , end = "]"
+        , spaces = spaces
+        , item = extraire_instructions
+        , trailing = Optional
+        }
 
--- Parser
-parseTcTurtle : String -> Result String Program
-parseTcTurtle input =
-    run programParser input
+-- Parses "Forward x"
+parseForward : Parser Instruction
+parseForward =
+    succeed (\n -> Forward (Basics.toFloat n))
+        |. symbol "Forward"
+        |. spaces
+        |= int
 
--- 自定义的 between 函数
-between : Parser a -> Parser b -> Parser c -> Parser c
-between left right parser =
-    left
-        |. parser
-        |. right
 
--- 程序解析器
-programParser : Parser Program
-programParser =
-    between (symbol "[") (symbol "]") (sepBy instructionParser (symbol ","))
 
--- 指令解析器
-instructionParser : Parser Instruction
-instructionParser =
-    oneOf
-        [ keyword "Forward" |. spaces |= int |> List.map Forward
-        , keyword "Left" |. spaces |= int |> List.map Left
-        , keyword "Right" |. spaces |= int |> List.map Right
-        , keyword "Repeat" |. spaces |= int |= (between (symbol "[") (symbol "]") (sepBy instructionParser (symbol ",")))
-            |> List.map Repeat
-        ]
+-- Parses "Left x"
+parseLeft : Parser Instruction
+parseLeft =
+    succeed (\n -> Left (Basics.toFloat n))
+        |. symbol "Left"
+        |. spaces
+        |= int
+
+
+
+-- Parses "Right x"
+parseRight : Parser Instruction
+parseRight =
+    succeed (\n -> Right (Basics.toFloat n))  -- Explicitly use Basics.toFloat
+        |. symbol "Right"
+        |. spaces
+        |= int
+
+
+-- Parses "Repeat x [ instructions ]"repeatParser : Parser Command
+parseRepeat =
+    succeed Repeat
+        |. symbol "Repeat"
+        |. spaces
+        |= int
+        |. spaces
+        |. symbol "["
+        |= lazy (\_ -> sequence { start = "", separator = ",", end = "", spaces = spaces, item = extraire_instructions, trailing = Parser.Forbidden }) -- Sans lazy, on aurait une récursion infinie car commandParser dépend de lui-même (pour les commandes imbriquées)
+        |. symbol "]"
+
