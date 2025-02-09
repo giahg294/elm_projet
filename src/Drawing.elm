@@ -3,6 +3,7 @@ module Drawing exposing (..)
 import Parsing exposing (Instruction(..))
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
+import Basics exposing (degrees, cos, sin)
 
 type alias Tcturtle = { x : Float, y : Float, orient : Float }
 

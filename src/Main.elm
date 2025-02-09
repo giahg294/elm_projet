@@ -58,6 +58,7 @@ unwrap res =
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
     case msg of
+<<<<<<< HEAD
         Change str ->
             ({ model | commande_str = str }, Cmd.none)
 
@@ -101,6 +102,18 @@ update msg model =
 subscriptions : Model -> Sub Msg
 subscriptions _ =
     Sub.none
+=======
+        UpdateCommands newCommands ->
+            { model | commands = newCommands, errorMessage = Nothing }
+
+        Draw ->
+            case parseTcTurtle model.commands of
+                Ok program ->
+                    { model | svgContent = div [] [ Html.map (\_ -> Draw) (drawTcTurtle program) ], errorMessage = Nothing }
+
+                Err err ->
+                    { model | errorMessage = Just ("Erreur de Parsing: " ++ String.join "\n" err) }
+>>>>>>> db45333daea6d0c812a74d6a36e814209a3c047a
 
 -- VIEW
 view : Model -> Html Msg
